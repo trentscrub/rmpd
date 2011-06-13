@@ -27,19 +27,6 @@ module Rmpd
       init_port(config)
     end
 
-    # def password
-    #   @password || parse_password(ENV["MPD_HOST"]) || DEFAULT_PASSWORD
-    # end
-    #
-    # def host
-    #   @host || parse_hostname(ENV["MPD_HOST"]) || DEFAULT_HOSTNAME
-    # end
-    # alias_method :hostname, :host
-    #
-    # def port
-    #   @port || ENV["MPD_PORT"] || DEFAULT_PORT
-    # end
-
 
     private
 
