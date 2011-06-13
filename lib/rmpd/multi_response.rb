@@ -4,6 +4,8 @@ module Rmpd
 
   class MultiResponse < DelegateClass(Array)
 
+    END_OF_RECORD = "\0x1E" # from ASCII
+
     def initialize(data, sep)
       super([])
       @sep = sep
@@ -26,9 +28,8 @@ module Rmpd
     private
 
     def parse(data)
-      # 0x1E is the ASCII code for End of Record.
-      data.gsub!(@sep, "\0x1E\\1")
-      data.split("\0x1E").each do |datum|
+      data.gsub!(@sep, "#{END_OF_RECORD}\\1")
+      data.split(END_OF_RECORD).each do |datum|
         if datum.empty?
           next
         else

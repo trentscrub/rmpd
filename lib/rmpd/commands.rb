@@ -22,7 +22,6 @@ module Rmpd
         when ACK_RE, OK_RE: break
         end
       end
-      # return lines[0..-2].join
       return lines.join
     end
 
