@@ -9,7 +9,7 @@ module Rmpd
           server_version_at_least(*args[:min_version])
         end
         send_command(name.to_s.gsub(/^_*/, ""), *quote(a))
-        read_response
+        read_response unless @in_command_list
       end
       send(:define_method, name, &block)
     end
@@ -21,7 +21,7 @@ module Rmpd
           server_version_at_least(*args[:min_version])
         end
         send_command(name.to_s.gsub(/^_*/, ""), *quote(a))
-        read_responses(args[:regexp])
+        read_responses(args[:regexp]) unless @in_command_list
       end
       send(:define_method, name, &block)
     end

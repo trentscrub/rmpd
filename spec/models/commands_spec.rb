@@ -119,4 +119,17 @@ describe Rmpd::Commands do
     it_should_behave_like "a command with a song pos"
   end
 
+  describe "command_list" do
+    it "shouldn't wait for a response from the first command" do
+      @responses = connect_response + ok
+      @socket.stub!(:readline).and_return(*@responses)
+      @socket.stub!(:puts).and_return(@socket.puts)
+      @socket.stub!(:eof?).and_return(false)
+
+      @conn.command_list do |c|
+        c.status
+        c.stats
+      end
+    end
+  end
 end

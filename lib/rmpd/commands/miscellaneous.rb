@@ -20,5 +20,14 @@ module Rmpd
     alias_method :clear_error, :clearerror
     alias_method :not_commands, :notcommands
 
+    def command_list
+      send_command("command_list_begin")
+      @in_command_list = true
+      yield self
+      send_command("command_list_end")
+      read_response
+    ensure
+      @in_command_list = false
+    end
   end
 end
