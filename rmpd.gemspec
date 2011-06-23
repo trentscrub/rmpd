@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Eric Wollesen"]
   s.email       = ["ericw@xmtp.net"]
-  s.homepage    = ""
+  s.homepage    = "http://github.com/ewollesen/rmpd"
   s.summary     = %q{Music Player Daemon client in Ruby}
   s.description = %q{Music Player Daemon client in Ruby}
 
