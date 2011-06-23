@@ -8,7 +8,7 @@ module Rmpd
   ACK_RE = /^ACK \[(\d+)@(\d+)\] \{([^}]*)\} (.*)$/
   OK_RE = /^OK.*$/
 
-  class MpdError < Exception ; end
+  class MpdError < StandardError ; end
 
   class MpdConnRefusedError < MpdError ; end
 
