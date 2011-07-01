@@ -34,6 +34,11 @@ def connect_and_auth_responses
   connect_response + ok
 end
 
+def playlist_id_response
+  @id ||= 0
+  ["Id: #{@id += 1}"]
+end
+
 def ok(txt="")
   txt ? ["OK #{txt}\n"] : ["OK\n"]
 end

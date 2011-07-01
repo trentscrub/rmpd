@@ -13,7 +13,7 @@ module Rmpd
     end
 
     def ok?
-      self.all? {|x| x.ok?}
+      self.all?(&:ok?)
     end
 
     def ack?
@@ -21,7 +21,7 @@ module Rmpd
     end
 
     def error
-      self.find(nil) {|x| x.error}
+      self.map(&:error).compact.first
     end
 
 

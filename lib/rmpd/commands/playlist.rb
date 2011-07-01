@@ -32,12 +32,17 @@ module Rmpd
     simple_command :swapid
 
 
-    # must be a file only, cannot use with a director
+    # must be a file only, cannot use with a directory
     def addid(path, pos=nil)
       # pos is only for r7153+, but what version is that?
       server_version_at_least(0, 14, 0) if pos
-      send_command("addid #{quote(path)} #{pos.to_s}")
-      read_response
+      send_command("addid #{quote(path)} #{pos ? pos.to_s : nil}")
+      @add_id_response_regex ||= /(^Id: )/i
+      if @in_command_list
+        append_command_list_regexp(@add_id_response_regex)
+      else
+        read_responses(@add_id_response_regex)
+      end
     end
 
     alias_method :add_id, :addid
