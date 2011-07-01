@@ -25,9 +25,14 @@ module Rmpd
       @in_command_list = true
       yield self
       send_command("command_list_end")
-      read_response
+      if @in_command_list_response_regexp
+        read_responses(@in_command_list_response_regexp)
+      else
+        read_response
+      end
     ensure
       @in_command_list = false
+      @in_command_list_response_regexp = nil
     end
   end
 end

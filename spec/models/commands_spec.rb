@@ -131,5 +131,16 @@ describe Rmpd::Commands do
         c.stats
       end
     end
+
+    it "should handle multi responses" do
+      @responses = connect_and_auth_responses + playlist_id_response + ok
+      @socket.stub!(:readline).and_return(*@responses)
+      @socket.stub!(:puts).and_return(@socket.puts)
+      @socket.stub!(:eof?).and_return(false)
+
+      @conn.command_list do |c|
+        c.addid("foo")
+      end
+    end
   end
 end
