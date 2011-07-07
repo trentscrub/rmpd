@@ -19,7 +19,7 @@ module Rmpd
       while lines << @socket.readline do
         puts "recv: #{lines.last.strip} (#{OK_RE === lines.last})" if $DEBUG
         case lines.last
-        when ACK_RE, OK_RE: break
+        when ACK_RE, OK_RE; break
         end
       end
       return lines.join
