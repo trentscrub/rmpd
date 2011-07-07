@@ -38,9 +38,9 @@ module Rmpd
     def parse(data)
       data.split("\n").each do |line|
         case line
-        when KEY_VALUE_RE: register_key_val_pair($~)
-        when OK_RE: @error = nil
-        when ACK_RE: @error = MpdAckError.new($~.values_at(0..-1))
+        when KEY_VALUE_RE; register_key_val_pair($~)
+        when OK_RE; @error = nil
+        when ACK_RE; @error = MpdAckError.new($~.values_at(0..-1))
         end
       end
     end
