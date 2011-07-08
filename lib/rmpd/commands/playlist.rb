@@ -36,7 +36,9 @@ module Rmpd
     def addid(path, pos=nil)
       # pos is only for r7153+, but what version is that?
       server_version_at_least(0, 14, 0) if pos
-      send_command("addid #{quote([path])} #{pos ? pos.to_s : nil}")
+      args = [path]
+      args << pos if pos
+      send_command("addid", *quote(args))
       @add_id_response_regex ||= /(^Id: )/i
       if @in_command_list
         append_command_list_regexp(@add_id_response_regex)
