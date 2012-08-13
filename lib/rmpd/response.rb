@@ -4,7 +4,7 @@ module Rmpd
 
   KEY_VALUE_RE = /^([^:]+):\s*(.*)$/
   KNOWN_INT_FIELDS = [:pos, :id, :track, :playlistlength, :playlist,
-    :xfade, :repeat, :random, :queued, :volume, :song]
+    :xfade, :repeat, :random, :queued, :volume, :song, :songid]
   KNOWN_COMPLEX_FIELDS = [:time,]
 
   class Response < DelegateClass(Hash)
