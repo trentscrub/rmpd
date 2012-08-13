@@ -17,7 +17,7 @@ EOF
     end
 
     it "should have a size of 2" do
-      @response.should have(2).items
+      @response.should have(2).items, @response.inspect
     end
 
     it "should be OK" do

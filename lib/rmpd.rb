@@ -7,6 +7,7 @@ require File.join(File.dirname(__FILE__), "rmpd/response")
 module Rmpd
   ACK_RE = /^ACK \[(\d+)@(\d+)\] \{([^}]*)\} (.*)$/
   OK_RE = /^OK.*$/
+  LIST_OK_RE = /^list_OK.*$/
 
   class MpdError < StandardError ; end
 
