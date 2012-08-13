@@ -143,4 +143,20 @@ describe Rmpd::Commands do
       end
     end
   end
+
+  describe "command_list_ok" do
+    it "should return a list of multi responses" do
+      @responses = connect_response + command_list_ok_responses + ok
+      @socket.stub!(:readline).and_return(*@responses)
+      @socket.stub!(:puts).and_return(@socket.puts)
+      @socket.stub!(:eof?).and_return(false)
+
+      results = @conn.command_list_ok do |c|
+        c.list("album")
+        c.list("artist")
+      end
+
+      results.should have(2).items, results.pretty_inspect
+    end
+  end
 end

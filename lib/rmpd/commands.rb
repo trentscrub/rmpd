@@ -15,11 +15,14 @@ module Rmpd
     end
 
     def receive_server_response
+      @last_response = nil
       lines = []
       while lines << @socket.readline do
         puts "recv: #{lines.last.strip} (#{OK_RE === lines.last})" if $DEBUG
         case lines.last
-        when ACK_RE, OK_RE; break
+        when ACK_RE, OK_RE, LIST_OK_RE
+          @last_response = lines.last
+          break
         end
       end
       return lines.join

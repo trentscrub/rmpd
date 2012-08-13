@@ -46,3 +46,7 @@ end
 def ack(x=1, y=2, cmd="foo_command", msg="No one's home dopey!")
   ["ACK [#{x}@#{y}] {#{cmd}} #{msg}"]
 end
+
+def command_list_ok_responses
+  ["Album: Foo\n", "list_OK\n", "Artist: Bar\n", "list_OK\n"]
+end
