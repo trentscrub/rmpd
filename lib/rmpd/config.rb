@@ -16,7 +16,7 @@ module Rmpd
       case config_file
       when String, Pathname
         config = YAML::load_file(config_file)
-      when File
+      when File, StringIO
         config = YAML::load(config_file)
       else
         config = {}
