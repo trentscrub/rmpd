@@ -25,6 +25,10 @@ describe Rmpd::Config do
       @filename = File.join(File.dirname(__FILE__), "../../spec/fixtures/config_rails.yml")
     end
 
+    after(:each) do
+      Object.send(:remove_const, :Rails) if defined?(Rails)
+    end
+
     it "should load the development environment" do
       lambda do
         Rmpd::Config.new(@filename)
