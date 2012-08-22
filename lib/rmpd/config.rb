@@ -21,7 +21,8 @@ module Rmpd
       else
         config = {}
       end
-      config = config[Rails.env] if defined?(Rails) && config[Rails.env]
+      puts "env: #{detected_env}" if env_detected? && $DEBUG
+      config = config[detected_env] if env_detected?
       puts "config: #{config.inspect}" if $DEBUG
       init_host_and_password(config)
       init_port(config)
@@ -32,6 +33,22 @@ module Rmpd
 
     HOSTNAME_RE = /(.*)@(.*)/
 
+
+    def detected_env
+      if defined?(Rails)
+        Rails.env
+      elsif ENV.include?("APP_ENV")
+        ENV["APP_ENV"]
+      elsif ENV.include?("RACK_ENV")
+        ENV["RACK_ENV"]
+      elsif ENV.include?("RAILS_ENV")
+        ENV["RAILS_ENV"]
+      end
+    end
+
+    def env_detected?
+      !!detected_env
+    end
 
     def init_host_and_password(config)
       if config["hostname"]
