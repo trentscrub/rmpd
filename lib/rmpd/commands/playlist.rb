@@ -43,7 +43,7 @@ module Rmpd
       if @in_command_list
         append_command_list_regexp(@add_id_response_regex)
       else
-        read_responses(@add_id_response_regex)
+        read_response
       end
     end
 
