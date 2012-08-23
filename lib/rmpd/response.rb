@@ -29,8 +29,9 @@ module Rmpd
 
     private
 
-    def register_key_val_pair(r)
-      key, val = r[1].downcase.to_sym, r[2]
+    def register_key_val_pair(match_data)
+      key, val = match_data[1].downcase.to_sym, match_data[2]
+
       val = val.to_i if KNOWN_INT_FIELDS.include?(key)
       val = val.to_f if KNOWN_FLOAT_FIELDS.include?(key)
       val = send("parse_complex_#{key}", val) if KNOWN_COMPLEX_FIELDS.include?(key)
@@ -41,7 +42,8 @@ module Rmpd
     def parse(lines)
       lines.each do |line|
         case line
-        when KEY_VALUE_RE; register_key_val_pair($~)
+        when KEY_VALUE_RE
+          register_key_val_pair($~)
         when ACK_RE
           @error = $~[0]
           break

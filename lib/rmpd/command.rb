@@ -5,29 +5,36 @@ require "forwardable"
 module Rmpd
   class Command
 
-    def self.new(connection, name, splitter=nil, *args, &block)
+    MULTIPLE_RESPONSE_COMMANDS = [
+                                  "idle",
+                                  "list",
+                                  "playlist",
+                                  "playlistfind",
+                                  "search",
+                                 ]
+
+    def self.new(connection, name, *args, &block)
       obj = super
-      obj.extend(choose_strategy(name, splitter))
+      obj.extend(choose_strategy(name))
     end
 
-    def initialize(connection, name, splitter=nil, *args, &block)
+    def initialize(connection, name, *args, &block)
       @mpd = connection
       @name = name
       @args = args
-      @splitter = splitter
       @list = initialize_list(&block) if block_given?
     end
 
 
     private
 
-    def self.choose_strategy(name, splitter)
+    def self.choose_strategy(name)
       if /command_list_ok/ === name
         CommandListOkStrategy
       elsif /command_list/ === name
         CommandListStrategy
-      elsif splitter
-        CommandMultiStrategy
+      elsif MULTIPLE_RESPONSE_COMMANDS.include?(name)
+        CommandMultipleResponseStrategy
       else
         CommandStrategy
       end
@@ -50,13 +57,11 @@ module Rmpd
       end
     end
 
-    module CommandMultiStrategy
+    module CommandMultipleResponseStrategy
       def execute
-        splitter = Splitter.new(@splitter)
-
         @mpd.send_command(*process)
-        splitter.split(@mpd.read_response).map do |chunk|
-          Response.new(chunk)
+        ResponseSplitter.split(@mpd.read_response) do |responses, lines|
+          responses << Response.new(lines)
         end
       end
 
