@@ -35,6 +35,7 @@ module Rmpd
                            ]
     MULTI_RESPONSE_COMMANDS = [
                                "commands",
+                               "find",
                                "idle",
                                "list",
                                "outputs",
