@@ -4,6 +4,7 @@ require "socket"
 module Rmpd
   class Connection
     include Socket::Constants
+    include Rmpd::Commands
 
     attr_reader :socket
 
@@ -39,6 +40,7 @@ module Rmpd
     end
 
     def send_command(command, *args)
+      connect
       @socket.puts("#{command} #{args.join(" ")}")
     end
 
@@ -49,18 +51,14 @@ module Rmpd
         response << line.strip
         break if END_RE === line
       end
-
-      # check_protocol_status(response.pop)
-
+      response
+    rescue EOFError => e
+      @socket.close
       response
     end
 
-
-    private
-
-    def check_protocol_status(status)
-      raise MpdAckError.new($~) if ACK_RE === status
+    def mpd
+      self
     end
-
   end
 end

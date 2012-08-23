@@ -1,17 +1,12 @@
 module Rmpd
   module Commands
 
-    complex_command :outputs, :regexp => /(^outputid: )/i
-    complex_command :tagtypes, :regexp => /(^tagtype: )/i, :min_version => [0, 13, 0]
-
+    simple_command :outputs
+    simple_command :tagtypes, :min_version => [0, 13, 0]
     simple_command :disableoutput
     simple_command :enableoutput
     simple_command :update
-
-    def kill
-      send_command("kill")
-      @socket.close
-    end
+    simple_command :kill
 
     alias_method :disable_output, :disableoutput
     alias_method :tag_types, :tagtypes

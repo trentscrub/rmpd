@@ -1,14 +1,14 @@
 module Rmpd
   module Commands
 
-    complex_command :listplaylist, :min_version => [0, 13, 0]
-    complex_command :listplaylistinfo, :min_version => [0, 12, 0]
-    complex_command :playlistfind, :min_version => [0, 13, 0]
-    complex_command :playlistid
-    complex_command :playlistinfo
-    complex_command :playlistsearch, :min_version => [0, 13, 0]
-    complex_command :plchanges
-    complex_command :plchangesposid, :regexp => /(^Id: )/i
+    simple_command :listplaylist, :min_version => [0, 13, 0]
+    simple_command :listplaylistinfo, :min_version => [0, 12, 0]
+    simple_command :playlistfind, :min_version => [0, 13, 0]
+    simple_command :playlistid
+    simple_command :playlistinfo
+    simple_command :playlistsearch, :min_version => [0, 13, 0]
+    simple_command :plchanges
+    simple_command :plchangesposid
 
     simple_command :_playlist
     simple_command :add # The docs on the wiki don't line up with empirical
@@ -30,22 +30,7 @@ module Rmpd
     simple_command :shuffle
     simple_command :swap
     simple_command :swapid
-
-
-    # must be a file only, cannot use with a directory
-    def addid(path, pos=nil)
-      # pos is only for r7153+, but what version is that?
-      server_version_at_least(0, 14, 0) if pos
-      args = [path]
-      args << pos if pos
-      send_command("addid", *quote(args))
-      @add_id_response_regex ||= /(^Id: )/i
-      if @in_command_list
-        append_command_list_regexp(@add_id_response_regex)
-      else
-        read_response
-      end
-    end
+    simple_command :addid
 
     alias_method :add_id, :addid
     alias_method :current_song, :currentsong

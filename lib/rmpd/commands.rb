@@ -1,9 +1,9 @@
 require File.join(File.dirname(__FILE__), "commands/generators")
-# require File.join(File.dirname(__FILE__), "commands/admin")
-# require File.join(File.dirname(__FILE__), "commands/database")
-# require File.join(File.dirname(__FILE__), "commands/miscellaneous")
-# require File.join(File.dirname(__FILE__), "commands/playback")
-# require File.join(File.dirname(__FILE__), "commands/playlist")
+require File.join(File.dirname(__FILE__), "commands/admin")
+require File.join(File.dirname(__FILE__), "commands/database")
+require File.join(File.dirname(__FILE__), "commands/miscellaneous")
+require File.join(File.dirname(__FILE__), "commands/playback")
+require File.join(File.dirname(__FILE__), "commands/playlist")
 
 module Rmpd
   module Commands

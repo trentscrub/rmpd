@@ -5,23 +5,13 @@ require "forwardable"
 module Rmpd
   class Command
 
-    MULTIPLE_RESPONSE_COMMANDS = [
-                                  "idle",
-                                  "list",
-                                  "playlist",
-                                  "playlistfind",
-                                  "search",
-                                 ]
-
-    def self.new(connection, name, *args, &block)
+    def self.new(name)
       obj = super
       obj.extend(choose_strategy(name))
     end
 
-    def initialize(connection, name, *args, &block)
-      @mpd = connection
+    def initialize(name)
       @name = name
-      @args = args
       @list = initialize_list(&block) if block_given?
     end
 
@@ -33,63 +23,52 @@ module Rmpd
         CommandListOkStrategy
       elsif /command_list/ === name
         CommandListStrategy
-      elsif MULTIPLE_RESPONSE_COMMANDS.include?(name)
-        CommandMultipleResponseStrategy
       else
         CommandStrategy
       end
     end
 
     def initialize_list
-      list = List.new(@mpd)
+      list = List.new
       yield list
       list
     end
 
     module CommandStrategy
-      def execute
-        @mpd.send_command(*process)
-        Response.new(@mpd.read_response)
+
+      def execute(connection, *args)
+        connection.send_command(@name, *args)
+        Response.factory(@name).parse(connection.read_response)
       end
 
-      def process
-        [@name, *@args]
-      end
-    end
-
-    module CommandMultipleResponseStrategy
-      def execute
-        @mpd.send_command(*process)
-        ResponseSplitter.split(@mpd.read_response) do |responses, lines|
-          responses << Response.new(lines)
-        end
-      end
-
-      def process
-        [@name, *@args]
-      end
     end
 
     module CommandListStrategy
-      def execute
-        @mpd.send_command("command_list_begin")
-        @list.map(&:process).map do |args|
-          @mpd.send_command(*args)
+
+      def execute(connection, *args, &block)
+        connection.send_command("command_list_begin")
+        @list.map do |command_w_args|
+          connection.send_command(*command_w_args)
         end
-        @mpd.send_command("command_list_end")
-        Response.new(@mpd.read_response)
+        connection.send_command("command_list_end")
+        Response.factory(@name).parse(connection.read_response)
       end
+
     end
 
     module CommandListOkStrategy
-      def execute
-        @mpd.send_command("command_list_ok_begin")
-        @list.map(&:process).map do |args|
-          @mpd.send_command(*args)
-        end
-        @mpd.send_command("command_list_end")
 
-        handle_command_list_ok_response(@mpd.read_response)
+      def execute(connection, *args, &block)
+        $stderr.puts "EXECUTE BLOCK[#{@name}]: #{block_given?}"
+        list = List.new
+        yield list
+
+        connection.send_command("command_list_ok_begin")
+        list.map do |command_w_args|
+          connection.send_command(*command_w_args)
+        end
+        connection.send_command("command_list_end")
+        handle_command_list_ok_response(connection.read_response)
       end
 
 
@@ -97,7 +76,6 @@ module Rmpd
 
       def handle_command_list_ok_response(lines)
         lines.pop while lines.last =~ LIST_OK_RE || lines.last =~ OK_RE
-
         ResponseArray.new(split_responses(lines))
       end
 
@@ -109,7 +87,7 @@ module Rmpd
             ra.last << line
           end
           ra
-        end.map {|response| Response.new(response)}
+        end.map {|response| Response.factory(@name).parse(response)}
       end
 
     end
@@ -135,8 +113,7 @@ module Rmpd
 
       def_delegators :@cmds, :empty?, :each, :map, :size
 
-      def initialize(mpd)
-        @mpd = mpd
+      def initialize
         @cmds = []
       end
 
@@ -144,7 +121,7 @@ module Rmpd
       protected
 
       def method_missing(name, *args, &block)
-        @cmds << Command.new(@mpd, name.to_s, *args, &block)
+        @cmds << [name.to_s, *args]
       end
     end
 
