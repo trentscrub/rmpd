@@ -46,8 +46,11 @@ module Rmpd
     module CommandListStrategy
 
       def execute(connection, *args, &block)
+        list = List.new
+        yield list
+
         connection.send_command("command_list_begin")
-        @list.map do |command_w_args|
+        list.map do |command_w_args|
           connection.send_command(*command_w_args)
         end
         connection.send_command("command_list_end")
@@ -59,7 +62,6 @@ module Rmpd
     module CommandListOkStrategy
 
       def execute(connection, *args, &block)
-        $stderr.puts "EXECUTE BLOCK[#{@name}]: #{block_given?}"
         list = List.new
         yield list
 

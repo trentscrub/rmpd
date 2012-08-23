@@ -6,6 +6,10 @@ module Rmpd
     include Socket::Constants
     include Rmpd::Commands
 
+
+    MAX_RETRIES = 5
+
+
     attr_reader :socket
 
 
@@ -31,29 +35,43 @@ module Rmpd
         end
       end
 
-      $stderr.puts read_response # protocol version, ignore for now
-
-      if @config.password
-        send_command("password", @config.password)
-        $stderr.puts read_response
-      end
+      read_response # protocol version, ignore for now
+      password(@config.password) if @config.password
     end
 
     def send_command(command, *args)
-      connect
-      @socket.puts("#{command} #{args.join(" ")}")
+      tries = 0
+
+      begin
+        connect
+        @socket.puts("#{command} #{args.join(" ")}".strip)
+      rescue EOFError => e
+        @socket.close
+        if (tries += 1) < MAX_RETRIES
+          retry
+        else
+          raise MpdError.new("Retry count exceeded")
+        end
+      end
     end
 
     def read_response
+      tries = 0
       response = []
 
-      while (line = @socket.readline)
-        response << line.strip
-        break if END_RE === line
+      begin
+        while (line = @socket.readline)
+          response << line.strip
+          break if END_RE === line
+        end
+      rescue EOFError => e
+        @socket.close
+        if (tries += 1) < MAX_RETRIES
+          retry
+        else
+          raise MpdError.new("Retry count exceeded")
+        end
       end
-      response
-    rescue EOFError => e
-      @socket.close
       response
     end
 

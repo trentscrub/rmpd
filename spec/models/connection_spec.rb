@@ -29,6 +29,7 @@ describe Connection do
   end
 
   it "should generate a server version" do
+    pending "Do I care anymore?"
     version = "0.1.2"
     responses = connect_response(version) + ok
     @socket.should_receive(:readline).and_return(*responses)
@@ -44,6 +45,7 @@ describe Connection do
   end
 
   it "should restrict access based on server version" do
+    pending "Do I care anymore?"
     responses = connect_response("0.1.0")
     @socket.stub!(:readline).and_return(*responses)
     @conn.instance_eval do

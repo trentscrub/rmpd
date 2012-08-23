@@ -33,16 +33,6 @@ describe Rmpd::Commands do
     end.should raise_error(Rmpd::MpdError, "Retry count exceeded")
   end
 
-  it "should hide password output when in debug mode" do
-    set_password
-    @socket.stub!(:readline).and_return(*(connect_and_auth_responses + ok))
-    Kernel.should_receive(:puts).with("send: password #{"*"*8}")
-    Kernel.should_receive(:puts).with("send: ping")
-    $DEBUG = 1
-    @conn.ping
-    $DEBUG = nil
-  end
-
   it "should abort after a limited number of tries against a closed connection" do
     @socket.stub!(:puts).and_raise(EOFError)
     @socket.stub!(:readline).and_return(*(connect_response + ok))

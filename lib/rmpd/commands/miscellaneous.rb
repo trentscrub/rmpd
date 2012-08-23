@@ -10,7 +10,12 @@ module Rmpd
     simple_command :ping
     simple_command :stats
     simple_command :status
-    simple_command :close
+    simple_command :_close
+
+    def close
+      _close
+      @socket.close
+    end
 
     simple_command :command_list
     simple_command :command_list_ok
