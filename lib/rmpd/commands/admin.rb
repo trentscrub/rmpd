@@ -6,7 +6,12 @@ module Rmpd
     simple_command :disableoutput
     simple_command :enableoutput
     simple_command :update
-    simple_command :kill
+    simple_command :_kill
+
+    def kill
+      _kill
+      @socket.close
+    end
 
     alias_method :disable_output, :disableoutput
     alias_method :tag_types, :tagtypes

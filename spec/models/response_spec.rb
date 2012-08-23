@@ -5,11 +5,8 @@ include Rmpd
 
 describe Rmpd::Response do
   before(:each) do
-    data = <<-EOF
-foo: bar
-OK
-EOF
-    @response = Rmpd::Response.new(data)
+    data = ["foo: bar", "OK"]
+    @response = Rmpd::Response.factory("status").parse(data)
   end
 
   it "should have a foo method" do
@@ -18,8 +15,8 @@ EOF
   end
 
   it "should have a foo key" do
-    @response.should include(:foo)
-    @response[:foo].should == "bar"
+    @response.should include("foo")
+    @response["foo"].should == "bar"
   end
 
   it "should be ok" do
