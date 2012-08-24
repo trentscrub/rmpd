@@ -8,7 +8,7 @@ module Rmpd
         # if args.include?(:min_version)
         #   server_version_at_least(*args[:min_version])
         # end
-        Command.new(name.to_s.gsub(/^_*/, "")).execute(mpd, *quote(a), &block)
+        Command.new(name.to_s.gsub(/^_*/, "")).execute(mpd, *a, &block)
       end
       send(:define_method, name, &command)
     end

@@ -44,7 +44,7 @@ module Rmpd
 
       begin
         connect
-        @socket.puts("#{command} #{args.join(" ")}".strip)
+        @socket.puts("#{command} #{quote(args).join(" ")}".strip)
       rescue EOFError => e
         @socket.close
         if (tries += 1) < MAX_RETRIES
@@ -78,5 +78,10 @@ module Rmpd
     def mpd
       self
     end
+
+    def quote(args)
+      args.collect {|arg| "\"#{arg.to_s.gsub(/"/, "\\\"")}\""}
+    end
+
   end
 end

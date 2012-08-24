@@ -62,11 +62,11 @@ module Rmpd
     module CommandListOkStrategy
 
       def execute(connection, *args, &block)
-        list = List.new
-        yield list
+        @list = List.new
+        yield @list
 
         connection.send_command("command_list_ok_begin")
-        list.map do |command_w_args|
+        @list.map do |command_w_args|
           connection.send_command(*command_w_args)
         end
         connection.send_command("command_list_end")
@@ -82,6 +82,8 @@ module Rmpd
       end
 
       def split_responses(lines)
+        commands = @list.map(&:first)
+
         lines.reduce([[]]) do |ra, line|
           if LIST_OK_RE === line
             ra << []
@@ -89,7 +91,9 @@ module Rmpd
             ra.last << line
           end
           ra
-        end.map {|response| Response.factory(@name).parse(response)}
+        end.map do |response|
+          Response.factory(commands.shift).parse(response)
+        end
       end
 
     end
