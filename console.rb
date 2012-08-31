@@ -1,18 +1,15 @@
-require "pry"
+#!/usr/bin/env ruby
 
+require "pry"
 require "rmpd"
 require "ruby-debug"
+require "stringio"
 
-mpd = Rmpd::Connection.new
+conf = StringIO.new <<EOF
+hostname: admin@localhost
+port: 6601
+EOF
 
-class Foo
-  include Rmpd::Commands
-
-  def mpd
-    @mpd ||= Rmpd::Connection.new
-  end
-end
-
-f = Foo.new
+mpd = Rmpd::Connection.new(conf)
 
 binding.pry
