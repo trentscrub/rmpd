@@ -18,6 +18,10 @@ module Rmpd
       @socket = nil
     end
 
+    def close
+      @socket.close
+    end
+
     def connect
       return unless @socket.nil? || @socket.closed?
 
@@ -45,7 +49,7 @@ module Rmpd
       begin
         connect
         @socket.puts("#{command} #{quote(args).join(" ")}".strip)
-      rescue EOFError => e
+      rescue Errno::EPIPE, EOFError
         @socket.close
         if (tries += 1) < MAX_RETRIES
           retry
@@ -56,21 +60,11 @@ module Rmpd
     end
 
     def read_response
-      tries = 0
       response = []
 
-      begin
-        while (line = @socket.readline)
-          response << line.strip
-          break if END_RE === line
-        end
-      rescue EOFError => e
-        @socket.close
-        if (tries += 1) < MAX_RETRIES
-          retry
-        else
-          raise MpdError.new("Retry count exceeded")
-        end
+      while (line = @socket.readline)
+        response << line.strip
+        break if END_RE === line
       end
       response
     end

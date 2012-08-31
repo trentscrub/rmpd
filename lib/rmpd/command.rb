@@ -39,6 +39,9 @@ module Rmpd
       def execute(connection, *args)
         connection.send_command(@name, *args)
         Response.factory(@name).parse(connection.read_response)
+      rescue EOFError
+        connection.close
+        retry
       end
 
     end
