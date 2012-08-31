@@ -127,7 +127,7 @@ module Rmpd
     end
 
     def parse(lines)
-      @known_keys = []
+      @first_key = nil
       @temp = {}
 
       super(lines)
@@ -139,13 +139,12 @@ module Rmpd
       key = match_data[1].downcase
       val = transform_value(key, match_data[2])
 
-      if @known_keys.include?(key)
+      if @first_key == key
         self << @temp
-        @known_keys = [key]
         @temp = {key => val}
       else
+        @first_key ||= key
         @temp[key] = val
-        @known_keys << key
         @temp.class.send(:define_method, key.to_s.gsub(/-/, "_")) {self[key]}
       end
     end
