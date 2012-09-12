@@ -74,7 +74,7 @@ module Rmpd
     end
 
     def quote(args)
-      args.collect {|arg| "\"#{arg.to_s.gsub(/"/, "\\\"")}\""}
+      args.collect {|arg| "\"#{arg.to_s.gsub(/"/, "\\\"").gsub(/\\/, "\\\\\\\\")}\""}
     end
 
   end
