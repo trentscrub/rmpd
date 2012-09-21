@@ -5,6 +5,7 @@ module Rmpd
   class Connection
     include Socket::Constants
     include Rmpd::Commands
+    include Rmpd::IO
 
 
     MAX_RETRIES = 5
