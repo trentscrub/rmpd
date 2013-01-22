@@ -102,6 +102,7 @@ module Rmpd
       val = val.to_i if KNOWN_INT_FIELDS.include?(key)
       val = val.to_f if KNOWN_FLOAT_FIELDS.include?(key)
       val = send("parse_complex_#{key}", val) if KNOWN_COMPLEX_FIELDS.include?(key.to_s)
+      val = val.to_s.encode("UTF-8", {:invalid => :replace, :undef => :replace, :replace => "?"}) if val.is_a?(String)
       val
     end
 
