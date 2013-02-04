@@ -63,7 +63,7 @@ module Rmpd
     def read_response
       response = []
 
-      while (line = @socket.readline)
+      while (line = @socket.readline.force_encoding("UTF-8"))
         response << line.strip
         break if END_RE === line
       end
