@@ -51,9 +51,9 @@ module Rmpd
     end
 
     def init_host_and_password(config)
-      if config["hostname"]
-        @hostname = parse_hostname(config["hostname"])
-        @password = parse_password(config["hostname"])
+      if hostname = config["hostname"] || config["host"]
+        @hostname = parse_hostname(hostname)
+        @password = parse_password(hostname)
       elsif ENV["MPD_HOST"]
         @hostname = parse_hostname(ENV["MPD_HOST"])
         @password = parse_password(ENV["MPD_HOST"])
