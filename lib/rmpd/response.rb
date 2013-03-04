@@ -69,6 +69,15 @@ module Rmpd
       @error = nil
     end
 
+    def marshal_dump
+      [@delegate_sd_obj, @error]
+    end
+
+    def marshal_load(array)
+      @delegate_sd_obj, @error = array
+      each {|k, v| define_getter(k)}
+    end
+
     def ok?
       @error.nil?
     end
@@ -119,6 +128,10 @@ module Rmpd
       value.split(":", 3).map(&:to_i)
     end
 
+    def define_getter(key)
+      self.class.send(:define_method, key.to_s.gsub(/-/, "_")) {self[key]}
+    end
+
   end
 
   class MultiResponse < Response
@@ -146,7 +159,7 @@ module Rmpd
       else
         @first_key ||= key
         @temp[key] = val
-        @temp.class.send(:define_method, key.to_s.gsub(/-/, "_")) {self[key]}
+        define_getter(key)
       end
     end
 
@@ -163,7 +176,7 @@ module Rmpd
       val = transform_value(key, match_data[2])
 
       self[key] = include?(key) ? ([self[key]] << val).flatten : val
-      self.class.send(:define_method, key.to_s.gsub(/-/,"_")) {self[key]}
+      define_getter(key)
     end
 
   end
