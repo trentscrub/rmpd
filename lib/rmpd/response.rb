@@ -128,8 +128,8 @@ module Rmpd
       value.split(":", 3).map(&:to_i)
     end
 
-    def define_getter(key)
-      self.class.send(:define_method, key.to_s.gsub(/-/, "_")) {self[key]}
+    def define_getter(key, instance=self)
+      instance.class.send(:define_method, key.to_s.gsub(/-/, "_")) {self[key]}
     end
 
   end
@@ -159,7 +159,7 @@ module Rmpd
       else
         @first_key ||= key
         @temp[key] = val
-        define_getter(key)
+        define_getter(key, @temp)
       end
     end
 
