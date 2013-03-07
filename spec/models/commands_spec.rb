@@ -17,6 +17,7 @@ describe Rmpd::Commands do
   before(:each) do
     @socket = mock_socket
     @config = mock_config
+    Socket.stub!(:new).and_return(@socket)
     @conn = Connection.new
   end
 
@@ -44,9 +45,9 @@ describe Rmpd::Commands do
 
   describe "close" do
     it "should close the socket" do
-      @socket.should_receive(:puts).with("close")
       @socket.stub!(:readline).and_return(*connect_response)
       @socket.should_receive(:close).once
+      @conn.ping
       @conn.close
     end
   end
