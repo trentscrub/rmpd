@@ -32,7 +32,6 @@ module Rmpd
           @socket = Socket.new(info[4], info[5], 0)
           @socket.connect(sockaddr)
         rescue StandardError => error
-          $stderr.puts "Failed to connect to #{info[3]}: #{error}"
           @socket = nil
           raise MpdConnRefusedError.new(error)
         else
