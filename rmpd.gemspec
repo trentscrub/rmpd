@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency("rspec", "~> 2.6.0")
-  s.add_development_dependency("ruby-debug")
+  s.add_development_dependency("debugger")
   s.add_development_dependency("rake")
   s.add_development_dependency("pry")
 end
