@@ -40,6 +40,7 @@ module Rmpd
         connection.send_command(@name, *args)
         Response.factory(@name).parse(connection.read_response)
       rescue EOFError
+        puts "CommandStrategy EOFError received, retrying" if $DEBUG
         connection.close
         retry
       end
@@ -58,6 +59,10 @@ module Rmpd
         end
         connection.send_command("command_list_end")
         Response.factory(@name).parse(connection.read_response)
+      rescue EOFError
+        puts "CommandListStrategy EOFError received, retrying" if $DEBUG
+        connection.close
+        retry
       end
 
     end
@@ -74,6 +79,10 @@ module Rmpd
         end
         connection.send_command("command_list_end")
         handle_command_list_ok_response(connection.read_response)
+      rescue EOFError
+        puts "CommandListOkStrategy EOFError received, retrying" if $DEBUG
+        connection.close
+        retry
       end
 
 
