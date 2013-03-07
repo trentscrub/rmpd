@@ -22,7 +22,7 @@ module Rmpd
 
     def idle(*subsystems)
       @in_idle = true
-      _idle(mpd, *subsystems)
+      _idle(*subsystems)
     ensure
       @in_idle = false
     end
