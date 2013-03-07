@@ -45,7 +45,7 @@ module Rmpd
     end
 
     def send_command(command, *args)
-      check_idle(command)
+      # check_idle(command)
       tries = 0
 
       begin
