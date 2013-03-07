@@ -17,6 +17,7 @@ module Rmpd
     def initialize(config_file=nil)
       @config = Rmpd::Config.new(config_file)
       @socket = nil
+      @in_idle = false
     end
 
     def close
@@ -44,6 +45,7 @@ module Rmpd
     end
 
     def send_command(command, *args)
+      raise MpdError.new("Idling. Call noidle first!") if @in_idle
       tries = 0
 
       begin
