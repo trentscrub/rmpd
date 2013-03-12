@@ -133,19 +133,26 @@ describe Rmpd::Commands do
         c.addid("foo")
       end
     end
+  end
 
-    it "raises an error when in idle" do
-      @responses = connect_and_auth_responses + playlist_id_response + ok
+  describe "noidle" do
+
+    it "returns nil" do
+      @responses = connect_response
       @socket.stub!(:readline).and_return(*@responses)
-      @socket.stub!(:puts).and_return(@socket.puts)
-      @socket.stub!(:eof?).and_return(false)
 
-      expect do
-        @conn.idle
-        @conn.command_list do |c|
-          c.addid("foo")
-        end
-      end.to raise_error(MpdError)
+      @conn.noidle.should be_nil
+    end
+
+    it "consumes no response, since none is tendered" do
+      @responses = connect_response + status_response + ok
+      @socket.stub!(:readline).and_return(*@responses)
+
+      response = @conn.status
+
+      response.should have(2).items, response.pretty_inspect
+      response.should include("volume")
+      response.should include("state")
     end
   end
 

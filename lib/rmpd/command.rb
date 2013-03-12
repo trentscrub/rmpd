@@ -23,6 +23,8 @@ module Rmpd
         CommandListOkStrategy
       elsif /command_list/ === name
         CommandListStrategy
+      elsif /noidle/ === name
+        NoidleStrategy
       else
         CommandStrategy
       end
@@ -32,6 +34,21 @@ module Rmpd
       list = List.new
       yield list
       list
+    end
+
+    module NoidleStrategy
+
+      def execute(connection, *args)
+        connection.send_command(@name, *args)
+        # The MPD server will never respond to a noidle command.
+        # http://www.mail-archive.com/musicpd-dev-team@lists.sourceforge.net/msg02246.html
+        nil
+      rescue EOFError
+        puts "CommandStrategy EOFError received, retrying" if $DEBUG
+        connection.close
+        retry
+      end
+
     end
 
     module CommandStrategy

@@ -50,3 +50,7 @@ end
 def command_list_ok_responses
   ["Album: Foo\n", "list_OK\n", "Artist: Bar\n", "list_OK\n"]
 end
+
+def status_response
+  ["volume: -1\n", "state: play\n",]
+end

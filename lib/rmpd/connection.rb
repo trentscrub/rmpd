@@ -17,7 +17,6 @@ module Rmpd
     def initialize(config_file=nil)
       @config = Rmpd::Config.new(config_file)
       @socket = nil
-      @in_idle = false
     end
 
     def close
@@ -45,7 +44,6 @@ module Rmpd
     end
 
     def send_command(command, *args)
-      # check_idle(command)
       tries = 0
 
       begin
@@ -79,10 +77,5 @@ module Rmpd
       args.collect {|arg| "\"#{arg.to_s.gsub(/"/, "\\\"").gsub(/\\/, "\\\\\\\\")}\""}
     end
 
-    def check_idle(command)
-      return if "noidle" == command || !@in_idle
-
-      raise MpdError.new("Idling. Call noidle first!")
-    end
   end
 end
