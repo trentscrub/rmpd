@@ -1,6 +1,7 @@
 module Rmpd
   module Commands
 
+    simple_command :config
     simple_command :commands
     simple_command :notcommands
     simple_command :clearerror

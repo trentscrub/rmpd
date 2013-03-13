@@ -26,6 +26,24 @@ module Rmpd
     def connect
       return unless @socket.nil? || @socket.closed?
 
+      if %r{^/} === @config.hostname
+        connect_unix_socket
+      else
+        connect_inet_socket
+      end
+
+      read_response # protocol version, ignore for now
+      password(@config.password) if @config.password
+    end
+
+    def connect_unix_socket
+      @socket = UNIXSocket.new(@config.hostname)
+    rescue StandardError => error
+      @socket = nil
+      raise MpdConnRefusedError.new(error)
+    end
+
+    def connect_inet_socket
       Socket::getaddrinfo(@config.hostname, @config.port, nil, SOCK_STREAM).each do |info|
         begin
           sockaddr = Socket.pack_sockaddr_in(info[1], info[3])
@@ -38,9 +56,6 @@ module Rmpd
           break
         end
       end
-
-      read_response # protocol version, ignore for now
-      password(@config.password) if @config.password
     end
 
     def send_command(command, *args)
