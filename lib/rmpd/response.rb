@@ -40,6 +40,8 @@ module Rmpd
                                "list",
                                "outputs",
                                "playlistinfo",
+                               "plchanges",
+                               "plchangesposid",
                                "search",
                                "tagtypes",
                               ]
