@@ -44,7 +44,7 @@ module Rmpd
         # http://www.mail-archive.com/musicpd-dev-team@lists.sourceforge.net/msg02246.html
         nil
       rescue EOFError
-        puts "CommandStrategy EOFError received, retrying" if $DEBUG
+        puts "NoidleStrategy EOFError received, retrying" if $DEBUG
         connection.close
         retry
       end
