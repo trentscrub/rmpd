@@ -3,6 +3,7 @@ module Rmpd
 
     simple_command :count
     simple_command :find
+    simple_command :findadd
     simple_command :list
     simple_command :listall
     simple_command :listallinfo
