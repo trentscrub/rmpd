@@ -161,8 +161,8 @@ module Rmpd
       else
         @first_key ||= key
         @temp[key] = val
-        define_getter(key, @temp)
       end
+      define_getter(key, @temp) unless respond_to?(key)
     end
 
   end
