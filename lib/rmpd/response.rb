@@ -144,7 +144,7 @@ module Rmpd
 
     def parse(lines)
       @first_key = nil
-      @temp = {}
+      @temp = NilHash.new
 
       super(lines)
       self << @temp unless @temp.empty?
@@ -157,7 +157,7 @@ module Rmpd
 
       if @first_key == key
         self << @temp
-        @temp = {key => val}
+        @temp = NilHash.new({key => val})
       else
         @first_key ||= key
         @temp[key] = val
@@ -170,7 +170,7 @@ module Rmpd
   class SingleResponse < Response
 
     def initialize
-      super({})
+      super(NilHash.new)
     end
 
     def register_key_val_pair(match_data)

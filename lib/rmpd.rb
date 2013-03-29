@@ -4,6 +4,8 @@ require File.join(File.dirname(__FILE__), "rmpd/commands")
 require File.join(File.dirname(__FILE__), "rmpd/io")
 require File.join(File.dirname(__FILE__), "rmpd/connection")
 require File.join(File.dirname(__FILE__), "rmpd/response")
+require File.join(File.dirname(__FILE__), "rmpd/nil_hash")
+
 
 module Rmpd
   ACK_RE = /^ACK \[(\d+)@(\d+)\] \{([^}]*)\} (.*)$/
