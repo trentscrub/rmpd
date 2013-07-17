@@ -23,8 +23,10 @@ module Rmpd
         CommandListOkStrategy
       elsif /command_list/ === name
         CommandListStrategy
-      elsif /noidle/ === name
+      elsif /^noidle$/ === name
         NoidleStrategy
+      elsif /^idle$/ === name
+        IdleStrategy
       else
         CommandStrategy
       end
@@ -34,6 +36,23 @@ module Rmpd
       list = List.new
       yield list
       list
+    end
+
+    module IdleStrategy
+
+      def execute(connection, *args, &block)
+        connection.send_command(@name, *args)
+        if block_given?
+          yield connection.socket rescue nil
+          connection.send_command("noidle")
+        end
+        Response.factory(@name).parse(connection.read_response)
+      rescue EOFError
+        puts "IdleStrategy EOFError received, retrying" if $DEBUG
+        connection.close
+        retry
+      end
+
     end
 
     module NoidleStrategy
