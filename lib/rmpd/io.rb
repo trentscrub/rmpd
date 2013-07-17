@@ -1,6 +1,14 @@
 module Rmpd
   module IO
 
+    def with_io(&block)
+      send_command("idle") unless @in_idle
+      @in_idle = true
+      yield @socket
+    ensure
+      send_command("noidle")
+    end
+
     def to_io
       send_command("idle") unless @in_idle
       @in_idle = true
